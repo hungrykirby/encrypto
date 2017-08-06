@@ -30,27 +30,23 @@ class AESCipher(object):
     def _unpad(self, s):
         return s[:-ord(s[len(s)-1:])]
 
-if __name__ == '__main__':
-    print(''.join([random.choice(string.ascii_letters + string.digits) for i in range(50)]))
-
-    cipher = AESCipher("PkDv17c6xxiqXPrvG2cUiq90VIrERfthHuViKapv6E1F7E0IgP")
-
-    # 暗号化
-    password = cipher.encrypt("hogefuga")
-    print(password) # -> H/LfZg82FOdHhnructCHzfYnVgCOvjgEUGXXDFpjiYLBHw4Zflk/m2N9zEVwz6eC
-
-    #復号化
-    print(cipher.decrypt(password))
-
-
-    f = open('text.txt', 'w') # 書き込みモードで開く
-    f.write(str(password).split("\'")[1]) # 引数の文字列をファイルに書き込む
-    f.close() # ファイルを閉じる
-
-    f = open('text.txt')
-    data1 = f.read()  # ファイル終端まで全て読んだデータを返す
+def writeEncrypted(inputtext, filename, key):
+    cipher = AESCipher(key)
+    encryptedtxt = cipher.encrypt(inputtext)
+    f = open(filename, 'w')
+    f.write(str(encryptedtxt).split("\'")[1])
     f.close()
-    print(type(data1))
-    print(data1)
-    print(data1.encode('utf-8'))
-    print(cipher.decrypt(data1.encode('utf-8')))
+
+def openDecypt(filename, key):
+    cipher = AESCipher(key)
+    f = open(filename)
+    data = f.read()
+    f.close()
+    print(cipher.decrypt(data.encode('utf-8')))
+
+
+if __name__ == '__main__':
+    key = ''.join([random.choice(string.ascii_letters + string.digits) for i in range(50)])
+    print(key)
+    writeEncrypted("hogehuga", "hogehuga.txt", key)
+    openDecypt("hogehuga.txt", key)
